@@ -1,29 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { background-color: #0d0d0d; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
+        .banner { font-size: 24px; font-weight: bold; color: #00ff00; border: 2px solid #00ff00; padding: 15px; margin-bottom: 20px; border-radius: 10px; text-transform: uppercase; text-shadow: 0 0 10px #00ff00; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #333; background: #1a1a1a; color: white; }
+        button { width: 92%; padding: 12px; margin: 5px 0; border-radius: 5px; border: none; background: #00ff00; color: black; font-weight: bold; cursor: pointer; }
+        button:hover { background: #00cc00; }
+        #result { margin-top: 20px; border: 2px dashed #333; padding: 10px; border-radius: 10px; }
+        footer { margin-top: 30px; font-size: 0.9em; color: #00ff00; }
+    </style>
+</head>
 <body>
-    <div class="banner">AI DP MAKER by Nawab ZADA</div>
+    <div class="banner">AI DP MAKER</div>
     
-    <input type="text" id="nameInput" placeholder="Name likho...">
-    <button onclick="generateAI_DP()">Create New AI DP</button>
+    <input type="text" id="nameInput" placeholder="Enter Name Here...">
+    <button onclick="generateAI_DP()">CREATE NEW AI DP</button>
     
-    <hr>
+    <p>OR</p>
     
     <input type="file" id="imageInput" accept="image/*">
-    <button onclick="processImage()">Style My Pic</button>
+    <button onclick="processImage()" style="background: #008cff; color: white;">STYLE MY PIC</button>
 
-    <div id="result"></div>
-    <footer style="margin-top:20px;">Created by Nawab ZADA HACKER</footer>
+    <div id="result">Your result will appear here...</div>
+    
+    <footer>Created by Nawab ZADA HACKER</footer>
 
     <script>
-        // Mode 1: Text se DP generate karna
         function generateAI_DP() {
             const name = document.getElementById('nameInput').value;
-            if(!name) return alert("Naam likho jani!");
-            const prompt = `3D stylish profile picture with name ${name}, dark theme, neon lights`;
-            document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}" style="width:250px; border-radius:50%">`;
+            if(!name) return alert(" Yahan Naam likho!");
+            const prompt = `3D stylish profile picture with name ${name}, dark theme, neon lights, high quality`;
+            document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}" style="width:100%; border-radius:10px;">`;
         }
 
-        // Mode 2: Pic upload karke name add karna
         function processImage() {
             const file = document.getElementById('imageInput').files[0];
             const name = document.getElementById('nameInput').value;
@@ -37,11 +48,13 @@
                     canvas.width = img.width; canvas.height = img.height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
-                    ctx.font = "bold 80px Arial";
-                    ctx.fillStyle = "cyan";
+                    ctx.font = "bold 100px Arial";
+                    ctx.fillStyle = "#00ff00";
                     ctx.textAlign = "center";
-                    ctx.fillText(name, canvas.width/2, canvas.height - 100);
-                    document.getElementById('result').innerHTML = `<img src="${canvas.toDataURL()}" style="width:100%">`;
+                    ctx.shadowColor = "black";
+                    ctx.shadowBlur = 20;
+                    ctx.fillText(name, canvas.width/2, canvas.height - 150);
+                    document.getElementById('result').innerHTML = `<img src="${canvas.toDataURL()}" style="width:100%; border:2px solid #00ff00;">`;
                 }
                 img.src = e.target.result;
             }
