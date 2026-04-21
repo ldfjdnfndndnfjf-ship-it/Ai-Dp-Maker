@@ -1,26 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create by Nawab ZADA Hacker</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; background: #121212; color: white; padding: 20px; }
-        .banner { font-size: 2em; font-weight: bold; color: #00ff00; margin-bottom: 20px; }
-        input { padding: 10px; width: 80%; border-radius: 5px; border: none; }
-        button { padding: 10px 20px; background: #00ff00; border: none; cursor: pointer; margin-top: 10px; }
-        #result { margin-top: 20px; }
-        footer { margin-top: 50px; font-size: 0.8em; color: #888; }
-    </style>
-</head>
 <body>
-    <div class="banner">AI DP MAKER</div>
-    <input type="text" id="nameInput" placeholder="Enter your name for DP...">
-    <br>
-    <button onclick="generateDP()">Generate AI DP</button>
-    <div id="result"></div>
-    <footer>Created by Nawab ZADA HACKER</footer>
+    <div class="banner">AI DP MAKER by Nawab ZADA</div>
+    
+    <input type="text" id="nameInput" placeholder="Name likho...">
+    <button onclick="generateAI_DP()">Create New AI DP</button>
+    
+    <hr>
+    
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="processImage()">Style My Pic</button>
 
-    <script src="script.js"></script>
+    <div id="result"></div>
+    <footer style="margin-top:20px;">Created by Nawab ZADA HACKER</footer>
+
+    <script>
+        // Mode 1: Text se DP generate karna
+        function generateAI_DP() {
+            const name = document.getElementById('nameInput').value;
+            if(!name) return alert("Naam likho jani!");
+            const prompt = `3D stylish profile picture with name ${name}, dark theme, neon lights`;
+            document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}" style="width:250px; border-radius:50%">`;
+        }
+
+        // Mode 2: Pic upload karke name add karna
+        function processImage() {
+            const file = document.getElementById('imageInput').files[0];
+            const name = document.getElementById('nameInput').value;
+            if(!file || !name) return alert("Pic aur Naam dono dalo!");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width; canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    ctx.font = "bold 80px Arial";
+                    ctx.fillStyle = "cyan";
+                    ctx.textAlign = "center";
+                    ctx.fillText(name, canvas.width/2, canvas.height - 100);
+                    document.getElementById('result').innerHTML = `<img src="${canvas.toDataURL()}" style="width:100%">`;
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    </script>
 </body>
 </html>
