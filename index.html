@@ -8,14 +8,16 @@
         input, select { width: 90%; padding: 12px; margin: 5px 0; border-radius: 5px; background: #111; border: 1px solid #00ff00; color: #00ff00; }
         button { width: 92%; padding: 12px; margin: 5px 0; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
         .btn-hacker { background: #00ff00; color: black; }
+        .btn-save { background: #ffcc00; color: black; }
+        .btn-download { background: #ff0000; color: white; }
         #canvasContainer { margin-top: 15px; }
         canvas { max-width: 100%; height: auto; border: 2px solid #00ff00; cursor: crosshair; }
     </style>
 </head>
 <body>
-    <div class="banner">AI Dp Maker</div>
+    <div class="banner">DPs Maker Tool</div>
     
-    <input type="text" id="nameInput" placeholder="Name ya Poetry...">
+    <input type="text" id="nameInput" placeholder="Name ya Poetry likho...">
     <select id="styleSelect">
         <option value="neon">Neon Green</option>
         <option value="cyber">Cyberpunk</option>
@@ -37,13 +39,13 @@
     <button class="btn-hacker" onclick="generateAI_DP()">GENERATE HACKER DP</button>
     <input type="file" id="imageInput" accept="image/*">
     <button style="background: #008cff; color: white;" onclick="loadPic()">LOAD PIC</button>
-    <button class="btn-hacker" onclick="saveText()">SAVE TEXT</button>
-    <button style="background: #ff0000; color: white;" onclick="downloadDP()">DOWNLOAD</button>
+    <button class="btn-save" onclick="saveText()">SAVE TEXT</button>
+    <button class="btn-download" onclick="downloadDP()">DOWNLOAD DP</button>
 
     <div id="result"></div>
-    <canvas id="myCanvas" style="display:none;"></canvas>
+    <div id="canvasContainer"><canvas id="myCanvas" style="display:none;"></canvas></div>
     
-    <footer style="margin-top:20px;">Created by Nawab ZADA HACKER 🦅</footer>
+    <footer style="margin-top:20px; color: #00ff00;">Created by Nawab ZADA HACKER 🦅</footer>
 
     <script>
         let img = new Image();
@@ -51,20 +53,17 @@
         const canvas = document.getElementById('myCanvas');
         const ctx = canvas.getContext('2d');
         const styles = {
-            neon: { color: "#00ff00" }, cyber: { color: "#ff00ff" }, matrix: { color: "#00ff00" },
-            gold: { color: "#FFD700" }, blood: { color: "#8b0000" }, glitch: { color: "#ffffff" },
-            fire: { color: "#ff4500" }, chrome: { color: "#c0c0c0" }, ice: { color: "#00ffff" },
-            void: { color: "#333333" }, electric: { color: "#0000ff" }, ruby: { color: "#e0115f" },
-            emerald: { color: "#50c878" }, purple: { color: "#800080" }, sunset: { color: "#fd5e53" }
+            neon: "#00ff00", cyber: "#ff00ff", matrix: "#00ff00", gold: "#FFD700", blood: "#8b0000",
+            glitch: "#ffffff", fire: "#ff4500", chrome: "#c0c0c0", ice: "#00ffff", void: "#333333",
+            electric: "#0000ff", ruby: "#e0115f", emerald: "#50c878", purple: "#800080", sunset: "#fd5e53"
         };
 
         function generateAI_DP() {
             const name = document.getElementById('nameInput').value;
-            const style = document.getElementById('styleSelect').value;
             if(!name) return alert("Naam likho!");
-            // Optimized Hacker Prompt
-            const prompt = `Cyberpunk hacker style profile picture, theme:${style}, name "${name}" written in futuristic artistic typography, cinematic lighting, 8k, highly detailed, dark tech background`;
-            document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}" style="width:100%; border-radius:10px;">`;
+            // Optimized prompt for better name visibility
+            const prompt = `Professional 3D profile picture, the text "${name}" is prominently displayed in the center with glowing futuristic typography, cyberpunk hacker style, cinematic lighting, 8k resolution, highly detailed, dark tech background`;
+            document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?seed=${Math.floor(Math.random()*1000)}" style="width:100%; border-radius:10px;">`;
         }
 
         function loadPic() {
@@ -91,19 +90,16 @@
         function saveText() {
             const text = document.getElementById('nameInput').value;
             const styleKey = document.getElementById('styleSelect').value;
-            const s = styles[styleKey];
+            ctx.fillStyle = styles[styleKey];
             
-            // Dynamic Font Sizing Logic
             let fontSize = Math.min(canvas.width / 5, 120);
             ctx.font = `bold ${fontSize}px Courier New`;
             
-            // If text is too long, reduce font size
             while(ctx.measureText(text).width > canvas.width * 0.9 && fontSize > 20) {
                 fontSize -= 5;
                 ctx.font = `bold ${fontSize}px Courier New`;
             }
             
-            ctx.fillStyle = s.color;
             ctx.textAlign = "center";
             ctx.shadowColor = "black";
             ctx.shadowBlur = 10;
