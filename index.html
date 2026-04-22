@@ -7,67 +7,51 @@
         .banner { font-size: 20px; font-weight: bold; color: #00ff00; border: 2px solid #00ff00; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-shadow: 0 0 10px #00ff00; }
         input, select { width: 90%; padding: 12px; margin: 8px 0; border-radius: 5px; background: #1a1a1a; border: 1px solid #333; color: white; }
         button { width: 92%; padding: 12px; margin: 5px 0; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-ai { background: #00ff00; color: black; }
-        .btn-style { background: #008cff; color: white; }
-        #canvasContainer { margin-top: 20px; cursor: crosshair; border: 2px solid #333; }
-        canvas { max-width: 100%; height: auto; }
+        .btn-save { background: #ffcc00; color: black; }
+        .btn-download { background: #ff0000; color: white; }
+        canvas { max-width: 100%; height: auto; border: 2px solid #333; cursor: crosshair; }
     </style>
 </head>
 <body>
-    <div class="banner">AI DP Maker</div>
+    <div class="banner">AI DP MAKER</div>
     
     <input type="text" id="nameInput" placeholder="Name ya Poetry likho...">
     
     <select id="styleSelect">
-        <option value="neon">Neon Green (Hacker)</option>
+        <option value="neon">Neon Green</option>
         <option value="gold">Luxury Gold</option>
         <option value="matrix">Matrix Style</option>
-        <option value="cyber">Cyberpunk</option>
-        <option value="blood">Blood Dark</option>
+        <option value="blood">Blood Red</option>
     </select>
 
-    <button class="btn-ai" onclick="generateAI_DP()">GENERATE AI DP</button>
     <input type="file" id="imageInput" accept="image/*">
-    <button class="btn-style" onclick="loadAndEdit()">LOAD PIC FOR EDIT</button>
+    <button style="background: #008cff;" onclick="loadPic()">LOAD PIC</button>
+    <button class="btn-save" onclick="saveText()">SAVE TEXT TO PIC</button>
+    <button class="btn-download" onclick="downloadDP()">DOWNLOAD DP</button>
 
-    <div id="result"></div>
     <div id="canvasContainer"><canvas id="myCanvas" style="display:none;"></canvas></div>
     
-    <footer style="margin-top:20px;">Created by Nawab ZADA HACKER</footer>
-
     <script>
         let img = new Image();
+        let lastX = 0, lastY = 0;
         const canvas = document.getElementById('myCanvas');
         const ctx = canvas.getContext('2d');
-
-        // Style Settings
         const styles = {
             neon: { color: "#00ff00", font: "bold 80px Arial" },
             gold: { color: "#FFD700", font: "italic 80px Times New Roman" },
             matrix: { color: "#00ff00", font: "bold 80px Courier" },
-            cyber: { color: "#ff00ff", font: "bold 80px Impact" },
             blood: { color: "#8b0000", font: "bold 80px Arial" }
         };
 
-        function generateAI_DP() {
-            const name = document.getElementById('nameInput').value;
-            const style = document.getElementById('styleSelect').value;
-            if(!name) return alert("Naam likho jani!");
-            const prompt = `3D profile picture, style:${style}, name "${name}" in center, high quality, dark background`;
-            document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}" style="width:100%; border-radius:10px;">`;
-        }
-
-        function loadAndEdit() {
+        function loadPic() {
             const file = document.getElementById('imageInput').files[0];
             if(!file) return alert("Pehle pic select kro!");
-            
             const reader = new FileReader();
             reader.onload = function(e) {
                 img.onload = function() {
                     canvas.width = img.width; canvas.height = img.height;
                     ctx.drawImage(img, 0, 0);
                     canvas.style.display = "block";
-                    document.getElementById('result').innerHTML = "Ab pic par jahan click kroge, wahan text likh jayega!";
                 }
                 img.src = e.target.result;
             }
@@ -75,22 +59,29 @@
         }
 
         canvas.addEventListener('click', function(e) {
-            const name = document.getElementById('nameInput').value;
+            // Sirf position update kr raha h, draw nahi kr raha
+            const rect = canvas.getBoundingClientRect();
+            lastX = (e.clientX - rect.left) * (canvas.width / rect.width);
+            lastY = (e.clientY - rect.top) * (canvas.height / rect.height);
+            alert("Position set! Ab 'SAVE TEXT' dabaein.");
+        });
+
+        function saveText() {
+            const text = document.getElementById('nameInput').value;
             const styleKey = document.getElementById('styleSelect').value;
             const s = styles[styleKey];
-            
-            const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
-            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-
             ctx.font = s.font;
             ctx.fillStyle = s.color;
             ctx.textAlign = "center";
-            ctx.fillText(name, x, y);
-            
-            // Result show update
-            document.getElementById('result').innerHTML = `<img src="${canvas.toDataURL()}" style="width:100%; border:2px solid ${s.color};">`;
-        });
+            ctx.fillText(text, lastX, lastY);
+        }
+
+        function downloadDP() {
+            const link = document.createElement('a');
+            link.download = 'NawabZada_DP.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
     </script>
 </body>
 </html>
