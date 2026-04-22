@@ -3,41 +3,60 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { background-color: #0d0d0d; color: #fff; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; }
-        .banner { font-size: 24px; font-weight: bold; color: #00ff00; border: 2px solid #00ff00; padding: 15px; margin-bottom: 20px; border-radius: 10px; text-transform: uppercase; text-shadow: 0 0 10px #00ff00; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #333; background: #1a1a1a; color: white; }
-        button { width: 92%; padding: 12px; margin: 5px 0; border-radius: 5px; border: none; background: #00ff00; color: black; font-weight: bold; cursor: pointer; }
-        button:hover { background: #00cc00; }
-        #result { margin-top: 20px; border: 2px dashed #333; padding: 10px; border-radius: 10px; }
-        footer { margin-top: 30px; font-size: 0.9em; color: #00ff00; }
+        body { background: #0a0a0a; color: #fff; font-family: 'Courier New', sans-serif; text-align: center; padding: 15px; }
+        .banner { font-size: 22px; font-weight: bold; color: #00ff00; border: 2px solid #00ff00; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-shadow: 0 0 10px #00ff00; }
+        input, select { width: 90%; padding: 12px; margin: 8px 0; border-radius: 5px; background: #1a1a1a; border: 1px solid #333; color: white; }
+        button { width: 92%; padding: 12px; margin: 5px 0; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-ai { background: #00ff00; color: black; }
+        .btn-style { background: #008cff; color: white; }
+        #result { margin-top: 20px; padding: 10px; border: 1px solid #333; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div class="banner">AI DP MAKER</div>
+    <div class="banner">Ai Dp Maker</div>
     
-    <input type="text" id="nameInput" placeholder="Enter Name Here...">
-    <button onclick="generateAI_DP()">CREATE NEW AI DP</button>
+    <input type="text" id="nameInput" placeholder="Name enter kro...">
     
-    <p>OR</p>
-    
-    <input type="file" id="imageInput" accept="image/*">
-    <button onclick="processImage()" style="background: #008cff; color: white;">STYLE MY PIC</button>
+    <select id="styleSelect">
+        <option value="neon">Neon Green (Hacker)</option>
+        <option value="gold">Luxury Gold</option>
+        <option value="matrix">Matrix Style</option>
+        <option value="cyber">Cyberpunk</option>
+        <option value="blood">Blood Dark</option>
+    </select>
 
-    <div id="result">Your result will appear here...</div>
-    
+    <button class="btn-ai" onclick="generateAI_DP()">GENERATE AI DP</button>
+    <input type="file" id="imageInput" accept="image/*">
+    <button class="btn-style" onclick="processImage()">APPLY STYLE ON PIC</button>
+
+    <div id="result">Result yahan show hoga...</div>
     <footer>Created by Nawab ZADA HACKER</footer>
 
     <script>
+        function getStyle() {
+            const style = document.getElementById('styleSelect').value;
+            const styles = {
+                neon: { color: "#00ff00", font: "bold 100px Arial" },
+                gold: { color: "#FFD700", font: "italic 100px Times New Roman" },
+                matrix: { color: "#00ff00", font: "bold 100px Courier" },
+                cyber: { color: "#ff00ff", font: "bold 100px Impact" },
+                blood: { color: "#8b0000", font: "bold 100px Arial" }
+            };
+            return styles[style];
+        }
+
         function generateAI_DP() {
             const name = document.getElementById('nameInput').value;
-            if(!name) return alert(" Yahan Naam likho!");
-            const prompt = `3D stylish profile picture with name ${name}, dark theme, neon lights, high quality`;
+            const style = document.getElementById('styleSelect').value;
+            if(!name) return alert("Naam likho jani!");
+            const prompt = `3D profile picture, style:${style}, name "${name}" in center, high quality, 8k resolution, dark background`;
             document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}" style="width:100%; border-radius:10px;">`;
         }
 
         function processImage() {
             const file = document.getElementById('imageInput').files[0];
             const name = document.getElementById('nameInput').value;
+            const s = getStyle();
             if(!file || !name) return alert("Pic aur Naam dono dalo!");
 
             const reader = new FileReader();
@@ -48,13 +67,11 @@
                     canvas.width = img.width; canvas.height = img.height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
-                    ctx.font = "bold 100px Arial";
-                    ctx.fillStyle = "#00ff00";
+                    ctx.font = s.font;
+                    ctx.fillStyle = s.color;
                     ctx.textAlign = "center";
-                    ctx.shadowColor = "black";
-                    ctx.shadowBlur = 20;
                     ctx.fillText(name, canvas.width/2, canvas.height - 150);
-                    document.getElementById('result').innerHTML = `<img src="${canvas.toDataURL()}" style="width:100%; border:2px solid #00ff00;">`;
+                    document.getElementById('result').innerHTML = `<img src="${canvas.toDataURL()}" style="width:100%; border:2px solid ${s.color};">`;
                 }
                 img.src = e.target.result;
             }
