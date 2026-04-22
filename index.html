@@ -3,39 +3,47 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { background: #0a0a0a; color: #fff; font-family: 'Courier New', sans-serif; text-align: center; padding: 10px; }
-        .banner { font-size: 20px; font-weight: bold; color: #00ff00; border: 2px solid #00ff00; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-shadow: 0 0 10px #00ff00; }
-        input, select { width: 90%; padding: 10px; margin: 5px 0; border-radius: 5px; background: #1a1a1a; border: 1px solid #333; color: white; }
-        button { width: 92%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-ai { background: #00ff00; color: black; }
-        .btn-save { background: #ffcc00; color: black; }
-        .btn-download { background: #ff0000; color: white; }
+        body { background: #050505; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; padding: 10px; }
+        .banner { border: 2px solid #00ff00; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-shadow: 0 0 10px #00ff00; }
+        input, select { width: 90%; padding: 12px; margin: 5px 0; border-radius: 5px; background: #111; border: 1px solid #00ff00; color: #00ff00; }
+        button { width: 92%; padding: 12px; margin: 5px 0; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-hacker { background: #00ff00; color: black; }
         #canvasContainer { margin-top: 15px; }
-        canvas { max-width: 100%; height: auto; border: 2px solid #333; cursor: crosshair; }
+        canvas { max-width: 100%; height: auto; border: 2px solid #00ff00; cursor: crosshair; }
     </style>
 </head>
 <body>
-    <div class="banner">AI DP Maker</div>
+    <div class="banner">AI Dp Maker</div>
     
-    <input type="text" id="nameInput" placeholder="Name ya Poetry likho...">
+    <input type="text" id="nameInput" placeholder="Name ya Poetry...">
     <select id="styleSelect">
         <option value="neon">Neon Green</option>
-        <option value="gold">Luxury Gold</option>
-        <option value="matrix">Matrix Style</option>
         <option value="cyber">Cyberpunk</option>
-        <option value="blood">Blood Red</option>
+        <option value="matrix">Matrix Code</option>
+        <option value="gold">Royal Gold</option>
+        <option value="blood">Dark Blood</option>
+        <option value="glitch">Glitch Effect</option>
+        <option value="fire">Fire Style</option>
+        <option value="chrome">Liquid Chrome</option>
+        <option value="ice">Frost Ice</option>
+        <option value="void">Deep Void</option>
+        <option value="electric">Electric Blue</option>
+        <option value="ruby">Ruby Red</option>
+        <option value="emerald">Emerald</option>
+        <option value="purple">Neon Purple</option>
+        <option value="sunset">Sunset Orange</option>
     </select>
 
-    <button class="btn-ai" onclick="generateAI_DP()">GENERATE AI DP</button>
+    <button class="btn-hacker" onclick="generateAI_DP()">GENERATE HACKER DP</button>
     <input type="file" id="imageInput" accept="image/*">
-    <button style="background: #008cff;" onclick="loadPic()">LOAD PIC</button>
-    <button class="btn-save" onclick="saveText()">SAVE TEXT TO PIC</button>
-    <button class="btn-download" onclick="downloadDP()">DOWNLOAD DP</button>
+    <button style="background: #008cff; color: white;" onclick="loadPic()">LOAD PIC</button>
+    <button class="btn-hacker" onclick="saveText()">SAVE TEXT</button>
+    <button style="background: #ff0000; color: white;" onclick="downloadDP()">DOWNLOAD</button>
 
     <div id="result"></div>
-    <div id="canvasContainer"><canvas id="myCanvas" style="display:none;"></canvas></div>
+    <canvas id="myCanvas" style="display:none;"></canvas>
     
-    <footer style="margin-top:20px; color: #00ff00;">Created by Nawab ZADA HACKER 🦅</footer>
+    <footer style="margin-top:20px;">Created by Nawab ZADA HACKER 🦅</footer>
 
     <script>
         let img = new Image();
@@ -43,17 +51,19 @@
         const canvas = document.getElementById('myCanvas');
         const ctx = canvas.getContext('2d');
         const styles = {
-            neon: { color: "#00ff00" },
-            gold: { color: "#FFD700" },
-            matrix: { color: "#00ff00" },
-            cyber: { color: "#ff00ff" },
-            blood: { color: "#8b0000" }
+            neon: { color: "#00ff00" }, cyber: { color: "#ff00ff" }, matrix: { color: "#00ff00" },
+            gold: { color: "#FFD700" }, blood: { color: "#8b0000" }, glitch: { color: "#ffffff" },
+            fire: { color: "#ff4500" }, chrome: { color: "#c0c0c0" }, ice: { color: "#00ffff" },
+            void: { color: "#333333" }, electric: { color: "#0000ff" }, ruby: { color: "#e0115f" },
+            emerald: { color: "#50c878" }, purple: { color: "#800080" }, sunset: { color: "#fd5e53" }
         };
 
         function generateAI_DP() {
             const name = document.getElementById('nameInput').value;
+            const style = document.getElementById('styleSelect').value;
             if(!name) return alert("Naam likho!");
-            const prompt = `3D stylish profile picture with name ${name}, high quality, dark background`;
+            // Optimized Hacker Prompt
+            const prompt = `Cyberpunk hacker style profile picture, theme:${style}, name "${name}" written in futuristic artistic typography, cinematic lighting, 8k, highly detailed, dark tech background`;
             document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}" style="width:100%; border-radius:10px;">`;
         }
 
@@ -83,22 +93,26 @@
             const styleKey = document.getElementById('styleSelect').value;
             const s = styles[styleKey];
             
-            // Auto-resize logic
-            let fontSize = 80;
-            ctx.font = `bold ${fontSize}px Arial`;
+            // Dynamic Font Sizing Logic
+            let fontSize = Math.min(canvas.width / 5, 120);
+            ctx.font = `bold ${fontSize}px Courier New`;
+            
+            // If text is too long, reduce font size
             while(ctx.measureText(text).width > canvas.width * 0.9 && fontSize > 20) {
                 fontSize -= 5;
-                ctx.font = `bold ${fontSize}px Arial`;
+                ctx.font = `bold ${fontSize}px Courier New`;
             }
             
             ctx.fillStyle = s.color;
             ctx.textAlign = "center";
+            ctx.shadowColor = "black";
+            ctx.shadowBlur = 10;
             ctx.fillText(text, lastX, lastY);
         }
 
         function downloadDP() {
             const link = document.createElement('a');
-            link.download = 'NawabZada_DP.png';
+            link.download = 'NawabZada_Hacker_DP.png';
             link.href = canvas.toDataURL();
             link.click();
         }
