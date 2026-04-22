@@ -4,18 +4,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { background: #0a0a0a; color: #fff; font-family: 'Courier New', sans-serif; text-align: center; padding: 15px; }
-        .banner { font-size: 22px; font-weight: bold; color: #00ff00; border: 2px solid #00ff00; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-shadow: 0 0 10px #00ff00; }
+        .banner { font-size: 20px; font-weight: bold; color: #00ff00; border: 2px solid #00ff00; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-shadow: 0 0 10px #00ff00; }
         input, select { width: 90%; padding: 12px; margin: 8px 0; border-radius: 5px; background: #1a1a1a; border: 1px solid #333; color: white; }
         button { width: 92%; padding: 12px; margin: 5px 0; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
         .btn-ai { background: #00ff00; color: black; }
         .btn-style { background: #008cff; color: white; }
-        #result { margin-top: 20px; padding: 10px; border: 1px solid #333; border-radius: 10px; }
+        #canvasContainer { margin-top: 20px; cursor: crosshair; border: 2px solid #333; }
+        canvas { max-width: 100%; height: auto; }
     </style>
 </head>
 <body>
-    <div class="banner">Ai Dp Maker</div>
+    <div class="banner">AI DP Maker</div>
     
-    <input type="text" id="nameInput" placeholder="Name enter kro...">
+    <input type="text" id="nameInput" placeholder="Name ya Poetry likho...">
     
     <select id="styleSelect">
         <option value="neon">Neon Green (Hacker)</option>
@@ -27,56 +28,69 @@
 
     <button class="btn-ai" onclick="generateAI_DP()">GENERATE AI DP</button>
     <input type="file" id="imageInput" accept="image/*">
-    <button class="btn-style" onclick="processImage()">APPLY STYLE ON PIC</button>
+    <button class="btn-style" onclick="loadAndEdit()">LOAD PIC FOR EDIT</button>
 
-    <div id="result">Result yahan show hoga...</div>
-    <footer>Created by Nawab ZADA HACKER</footer>
+    <div id="result"></div>
+    <div id="canvasContainer"><canvas id="myCanvas" style="display:none;"></canvas></div>
+    
+    <footer style="margin-top:20px;">Created by Nawab ZADA HACKER</footer>
 
     <script>
-        function getStyle() {
-            const style = document.getElementById('styleSelect').value;
-            const styles = {
-                neon: { color: "#00ff00", font: "bold 100px Arial" },
-                gold: { color: "#FFD700", font: "italic 100px Times New Roman" },
-                matrix: { color: "#00ff00", font: "bold 100px Courier" },
-                cyber: { color: "#ff00ff", font: "bold 100px Impact" },
-                blood: { color: "#8b0000", font: "bold 100px Arial" }
-            };
-            return styles[style];
-        }
+        let img = new Image();
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Style Settings
+        const styles = {
+            neon: { color: "#00ff00", font: "bold 80px Arial" },
+            gold: { color: "#FFD700", font: "italic 80px Times New Roman" },
+            matrix: { color: "#00ff00", font: "bold 80px Courier" },
+            cyber: { color: "#ff00ff", font: "bold 80px Impact" },
+            blood: { color: "#8b0000", font: "bold 80px Arial" }
+        };
 
         function generateAI_DP() {
             const name = document.getElementById('nameInput').value;
             const style = document.getElementById('styleSelect').value;
             if(!name) return alert("Naam likho jani!");
-            const prompt = `3D profile picture, style:${style}, name "${name}" in center, high quality, 8k resolution, dark background`;
+            const prompt = `3D profile picture, style:${style}, name "${name}" in center, high quality, dark background`;
             document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}" style="width:100%; border-radius:10px;">`;
         }
 
-        function processImage() {
+        function loadAndEdit() {
             const file = document.getElementById('imageInput').files[0];
-            const name = document.getElementById('nameInput').value;
-            const s = getStyle();
-            if(!file || !name) return alert("Pic aur Naam dono dalo!");
-
+            if(!file) return alert("Pehle pic select kro!");
+            
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = new Image();
                 img.onload = function() {
-                    const canvas = document.createElement('canvas');
                     canvas.width = img.width; canvas.height = img.height;
-                    const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
-                    ctx.font = s.font;
-                    ctx.fillStyle = s.color;
-                    ctx.textAlign = "center";
-                    ctx.fillText(name, canvas.width/2, canvas.height - 150);
-                    document.getElementById('result').innerHTML = `<img src="${canvas.toDataURL()}" style="width:100%; border:2px solid ${s.color};">`;
+                    canvas.style.display = "block";
+                    document.getElementById('result').innerHTML = "Ab pic par jahan click kroge, wahan text likh jayega!";
                 }
                 img.src = e.target.result;
             }
             reader.readAsDataURL(file);
         }
+
+        canvas.addEventListener('click', function(e) {
+            const name = document.getElementById('nameInput').value;
+            const styleKey = document.getElementById('styleSelect').value;
+            const s = styles[styleKey];
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+            ctx.font = s.font;
+            ctx.fillStyle = s.color;
+            ctx.textAlign = "center";
+            ctx.fillText(name, x, y);
+            
+            // Result show update
+            document.getElementById('result').innerHTML = `<img src="${canvas.toDataURL()}" style="width:100%; border:2px solid ${s.color};">`;
+        });
     </script>
 </body>
 </html>
