@@ -10,60 +10,68 @@
         .btn-hacker { background: #00ff00; color: black; }
         .btn-save { background: #ffcc00; color: black; }
         .btn-download { background: #ff0000; color: white; }
-        #canvasContainer { margin-top: 15px; }
+        .lock-screen { display: block; padding: 20px; border: 2px dashed #00ff00; margin-bottom: 20px; }
+        #mainTool { display: none; }
         canvas { max-width: 100%; height: auto; border: 2px solid #00ff00; cursor: crosshair; }
     </style>
 </head>
 <body>
     <div class="banner">DPs Maker Tool</div>
     
-    <input type="text" id="nameInput" placeholder="Name ya Poetry likho...">
-    <select id="styleSelect">
-        <option value="neon">Neon Green</option>
-        <option value="cyber">Cyberpunk</option>
-        <option value="matrix">Matrix Code</option>
-        <option value="gold">Royal Gold</option>
-        <option value="blood">Dark Blood</option>
-        <option value="glitch">Glitch Effect</option>
-        <option value="fire">Fire Style</option>
-        <option value="chrome">Liquid Chrome</option>
-        <option value="ice">Frost Ice</option>
-        <option value="void">Deep Void</option>
-        <option value="electric">Electric Blue</option>
-        <option value="ruby">Ruby Red</option>
-        <option value="emerald">Emerald</option>
-        <option value="purple">Neon Purple</option>
-        <option value="sunset">Sunset Orange</option>
-    </select>
+    <div id="lockScreen" class="lock-screen">
+        <h3>Tool is Locked 🔒</h3>
+        <p>Unlock to access tool Features</p>
+        <a href="https://whatsapp.com/channel/0029VbB47ttDDmFNztpnZf2m" target="_blank">
+            <button class="btn-hacker" onclick="unlockTool()">🔘 UNLOCK TOOL</button>
+        </a>
+    </div>
 
-    <button class="btn-hacker" onclick="generateAI_DP()">GENERATE HACKER DP</button>
-    <input type="file" id="imageInput" accept="image/*">
-    <button style="background: #008cff; color: white;" onclick="loadPic()">LOAD PIC</button>
-    <button class="btn-save" onclick="saveText()">SAVE TEXT</button>
-    <button class="btn-download" onclick="downloadDP()">DOWNLOAD DP</button>
+    <div id="mainTool">
+        <input type="text" id="nameInput" placeholder="Name ya Poetry likho...">
+        <select id="styleSelect">
+            <option value="neon">Neon Green</option>
+            <option value="cyber">Cyberpunk</option>
+            <option value="matrix">Matrix Code</option>
+            <option value="gold">Royal Gold</option>
+            <option value="blood">Dark Blood</option>
+            <option value="glitch">Glitch Effect</option>
+            <option value="fire">Fire Style</option>
+            <option value="chrome">Liquid Chrome</option>
+            <option value="ice">Frost Ice</option>
+            <option value="void">Deep Void</option>
+            <option value="electric">Electric Blue</option>
+            <option value="ruby">Ruby Red</option>
+            <option value="emerald">Emerald</option>
+            <option value="purple">Neon Purple</option>
+            <option value="sunset">Sunset Orange</option>
+        </select>
 
-    <div id="result"></div>
-    <div id="canvasContainer"><canvas id="myCanvas" style="display:none;"></canvas></div>
+        <button class="btn-hacker" onclick="generateAI_DP()">GENERATE HACKER DP</button>
+        <input type="file" id="imageInput" accept="image/*">
+        <button style="background: #008cff; color: white;" onclick="loadPic()">LOAD PIC</button>
+        <button class="btn-save" onclick="saveText()">SAVE TEXT</button>
+        <button class="btn-download" onclick="downloadDP()">DOWNLOAD DP</button>
+
+        <div id="result"></div>
+        <div id="canvasContainer"><canvas id="myCanvas" style="display:none;"></canvas></div>
+    </div>
     
     <footer style="margin-top:20px; color: #00ff00;">Created by Nawab ZADA HACKER 🦅</footer>
 
     <script>
+        function unlockTool() { document.getElementById('mainTool').style.display = 'block'; document.getElementById('lockScreen').style.display = 'none'; }
+        
         let img = new Image();
         let lastX = 0, lastY = 0;
         const canvas = document.getElementById('myCanvas');
         const ctx = canvas.getContext('2d');
-        const styles = {
-            neon: "#00ff00", cyber: "#ff00ff", matrix: "#00ff00", gold: "#FFD700", blood: "#8b0000",
-            glitch: "#ffffff", fire: "#ff4500", chrome: "#c0c0c0", ice: "#00ffff", void: "#333333",
-            electric: "#0000ff", ruby: "#e0115f", emerald: "#50c878", purple: "#800080", sunset: "#fd5e53"
-        };
+        const styles = { neon: "#00ff00", cyber: "#ff00ff", matrix: "#00ff00", gold: "#FFD700", blood: "#8b0000", glitch: "#ffffff", fire: "#ff4500", chrome: "#c0c0c0", ice: "#00ffff", void: "#333333", electric: "#0000ff", ruby: "#e0115f", emerald: "#50c878", purple: "#800080", sunset: "#fd5e53" };
 
         function generateAI_DP() {
             const name = document.getElementById('nameInput').value;
             if(!name) return alert("Naam likho!");
-            // Optimized prompt for better name visibility
-            const prompt = `Professional 3D profile picture, the text "${name}" is prominently displayed in the center with glowing futuristic typography, cyberpunk hacker style, cinematic lighting, 8k resolution, highly detailed, dark tech background`;
-            document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?seed=${Math.floor(Math.random()*1000)}" style="width:100%; border-radius:10px;">`;
+            const prompt = `Cyberpunk hacker profile art, the name "${name}" written in bold, glowing, 3D luxury metallic typography, center aligned, futuristic aesthetics, cinematic 8k, dark high-tech background`;
+            document.getElementById('result').innerHTML = `<img src="https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${Math.random()}" style="width:100%; border-radius:10px;">`;
         }
 
         function loadPic() {
@@ -91,15 +99,9 @@
             const text = document.getElementById('nameInput').value;
             const styleKey = document.getElementById('styleSelect').value;
             ctx.fillStyle = styles[styleKey];
-            
             let fontSize = Math.min(canvas.width / 5, 120);
             ctx.font = `bold ${fontSize}px Courier New`;
-            
-            while(ctx.measureText(text).width > canvas.width * 0.9 && fontSize > 20) {
-                fontSize -= 5;
-                ctx.font = `bold ${fontSize}px Courier New`;
-            }
-            
+            while(ctx.measureText(text).width > canvas.width * 0.9 && fontSize > 20) { fontSize -= 5; ctx.font = `bold ${fontSize}px Courier New`; }
             ctx.textAlign = "center";
             ctx.shadowColor = "black";
             ctx.shadowBlur = 10;
